@@ -1,5 +1,6 @@
 package org.arham.springdemo2;
 
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -11,9 +12,9 @@ public class StudentRestController
     ArrayList<Student> studentArrayList=new ArrayList<>();
 
     @PostMapping
-    public String addStudent(@RequestBody Student s1){
+    public String addStudent(@Valid @RequestBody StudentRequestDTO s1){
 
-        studentArrayList.add(s1);
+        studentArrayList.add(new Student(s1.rollno(),s1.name(),s1.maths()));
         return "Student has been added Successfully";
     }
 
@@ -57,6 +58,21 @@ public class StudentRestController
     {
         return studentArrayList;
     }
+
+    @GetMapping("/{rollno}")
+    public StudentResponseDTO viewStudentByRollno(@PathVariable int rollno) {
+        int studentindex = 0;
+        for (int i = 0; i < studentArrayList.size(); i++) {
+            if (studentArrayList.get(i).getRollno() == rollno) {
+                studentindex = i;
+                break;
+            }
+
+        }
+        return StudentResponseDTO.fromEntity(studentArrayList.get(studentindex));
+
+    }
+
 
 
 }
